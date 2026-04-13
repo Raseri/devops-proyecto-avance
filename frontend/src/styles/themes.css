@@ -1,0 +1,164 @@
+/* themes.css - Role-based color themes */
+
+/* ============================================
+   ADMIN THEME - Azul Celeste 
+   ============================================ */
+[data-theme="admin"] {
+    --primary-color: #0ea5e9;
+    --primary-dark: #0284c7;
+    --primary-light: #38bdf8;
+    --secondary-color: #0369a1;
+    --accent-color: #0c4a6e;
+
+    --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+    --gradient-secondary: linear-gradient(135deg, #0284c7 0%, #0c4a6e 100%);
+    --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    --primary-hover: #0284c7;
+    --card-hover: rgba(14, 165, 233, 0.05);
+
+    --shadow-primary: 0 2px 8px rgba(14, 165, 233, 0.15);
+    --shadow-hover: 0 4px 15px rgba(14, 165, 233, 0.25);
+}
+
+/* ============================================
+   VENDEDOR THEME - Verde #32CD32
+   ============================================ */
+[data-theme="vendedor"] {
+    --primary-color: #32CD32;
+    --primary-dark: #228B22;
+    --primary-light: #90EE90;
+    --secondary-color: #006400;
+    --accent-color: #004d00;
+
+    --gradient-primary: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+    --gradient-secondary: linear-gradient(135deg, #228B22 0%, #006400 100%);
+    --gradient-accent: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    --primary-hover: #228B22;
+    --card-hover: rgba(50, 205, 50, 0.05);
+
+    --shadow-primary: 0 2px 8px rgba(50, 205, 50, 0.15);
+    --shadow-hover: 0 4px 15px rgba(50, 205, 50, 0.25);
+}
+
+/* ============================================
+   REPARTIDOR THEME - Naranja
+   ============================================ */
+[data-theme="repartidor"] {
+    --primary-color: #f97316;
+    --primary-dark: #ea580c;
+    --primary-light: #fb923c;
+    --secondary-color: #c2410c;
+    --accent-color: #7c2d12;
+
+    --gradient-primary: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    --gradient-secondary: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    --gradient-accent: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+
+    --primary-hover: #ea580c;
+    --card-hover: rgba(249, 115, 22, 0.05);
+
+    --shadow-primary: 0 2px 8px rgba(249, 115, 22, 0.15);
+    --shadow-hover: 0 4px 15px rgba(249, 115, 22, 0.25);
+}
+
+/* ============================================
+   THEME TRANSITIONS
+   ============================================ */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ============================================
+   THEMED COMPONENTS OVERRIDE
+   ============================================ */
+
+/* Buttons */
+[data-theme] .btn-primary {
+    background: var(--primary-color);
+    border: none;
+    box-shadow: var(--shadow-primary);
+    color: white;
+}
+
+[data-theme] .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    background: var(--primary-hover);
+}
+
+/* Navigation Active State */
+[data-theme] .nav-item.active {
+    background: var(--primary-color);
+    box-shadow: var(--shadow-primary);
+    color: white;
+}
+
+/* Cards with hover effect */
+[data-theme] .card:hover {
+    background-color: var(--card-hover);
+    border-color: var(--primary-color);
+}
+
+/* Sidebar Header */
+[data-theme="admin"] .app-sidebar-header {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="vendedor"] .app-sidebar-header {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="repartidor"] .app-sidebar-header {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Progress bars, badges, etc */
+[data-theme] .badge-primary {
+    background: var(--primary-color);
+}
+
+[data-theme] .progress-bar {
+    background: var(--primary-color);
+}
+
+/* Links */
+[data-theme] a:not(.btn) {
+    color: var(--primary-color);
+}
+
+[data-theme] a:not(.btn):hover {
+    color: var(--primary-dark);
+}
+
+/* Focus states */
+[data-theme] input:focus,
+[data-theme] textarea:focus,
+[data-theme] select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.1);
+}
+
+/* Charts and data visualization */
+[data-theme] .chart-primary {
+    color: var(--primary-color);
+}

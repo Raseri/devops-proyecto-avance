@@ -1,0 +1,54 @@
+# ============================================================
+# .dockerignore — Tienda Manager V2
+# Evita copiar archivos innecesarios a la imagen Docker.
+# Mantiene la imagen pequeña y segura.
+# ============================================================
+
+# Dependencias locales (se reinstalan dentro del contenedor)
+node_modules/
+frontend/node_modules/
+
+# Variables de entorno secretas (¡NUNCA subir al contenedor!)
+.env
+.env.*
+!.env.example
+
+# Archivos de Git
+.git/
+.gitignore
+.gitattributes
+
+# Archivos de desarrollo y tests
+tests/
+jest_output.txt
+test_logs.txt
+*.test.js
+*.spec.js
+
+# Docker (no incluir dentro de sí mismo)
+Dockerfile
+docker-compose.yml
+docker-init.sql
+wait-for-db.sh
+.dockerignore
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Carpetas de build innecesarias
+.cache/
+dist/

@@ -1,0 +1,72 @@
+================================================
+  🚀 PROYECTO TIENDA MANAGER - PRODUCCIÓN
+================================================
+
+Este proyecto ya se encuentra en producción y configurado para autodespliegue.
+
+## ACCESOS PRINCIPALES
+  🌐 Aplicación en vivo: https://tienda-manager-production-1367.up.railway.app
+  📦 Repositorio GitHub: https://github.com/Raseri/tienda-manager.git
+
+## USUARIOS DE PRUEBA
+  (Las credenciales funcionan tanto en local como en producción)
+
+  👑 Admin               → admin@tienda.com       / admin123
+  🛍️ Punto de Venta    → vendedor@tienda.com    / vendedor123
+  🛵 Entregas (Pedidos)  → repartidor@tienda.com  / repartidor123
+
+================================================
+  🏆 CUMPLIMIENTO DE RÚBRICA DEL PROYECTO
+================================================
+
+A continuación describo cómo implementé cada uno de los puntos requeridos en la rúbrica de evaluación para lograr el 100%:
+
+1. ✅ Funcionalidad completa (CRUD):
+Desarrollé un sistema totalmente funcional que cubre operaciones Mantenimiento/CRUD completas para Usuarios, Productos, Ventas y Pedidos. La base de datos relacional mantiene la integridad en tiempo real (ej. se descuenta el stock automáticamente al confirmar entregas o ventas).
+
+2. ✅ Implementación de OAuth/JWT:
+Implementé seguridad de tokens JSON Web Tokens (JWT). El backend genera un token encriptado al iniciar sesión y nuestro middleware (auth.js) protege rigurosamente las rutas. Los vendedores no pueden acceder a las bases de datos de administradores, asegurando protección de roles a nivel de servidor.
+
+3. ✅ Frontend completo (Decisión arquitectónica):
+Tomé la decisión profesional de construir el frontend utilizando Vanilla JS modularizado bajo el empaquetador "Vite". Elegí no usar un framework pesado como React o Vue porque, para un entorno local de Punto de Venta, la velocidad de carga inicial (Time-to-Interactive) es crítica. 
+Mi arquitectura se basa en inyección de Componentes Web Dinámicos e importaciones ES Modules, ofreciendo la misma escalabilidad de un framework pero siendo drásticamente más rápido en su ejecución y tomando en cuenta el contexto de nuestra investigacion,
+Nos enfocamos en lo eficiente y accesible porque mucha gente de tiendas pequeñas no tienen los recuros para paginas o softwares pesados
+
+4. ✅ Despliegue en producción:
+El proyecto está completamente desplegado en la nube de Railway. El backend en Node.js, la base de datos remota MySQL y el Frontend estático están enlazados. La URL es pública, segura (HTTPS) y 100% accesible en cualquier dispositivo.
+
+5. ✅ Pruebas y debugging:
+Implementé una suite de Pruebas Unitarias automatizadas en la carpeta `tests/`. Usando las librerías profesionales 'Jest' y 'SuperTest', creé tests para verificar que los servidores respondan HTTP 200 y simulé casos extremos de login incorrectos (400 y 401). Además del extenso debugging que hice para el manejo de llaves foráneas en MySQL.
+
+6. ✅ Creatividad y experiencia de usuario (UX):
+Diseñé una interfaz "Dark Mode" estilo Glassmorphism (efectos de cristal). Implementé navegación asíncrona (Single Page Application real) para que la pantalla nunca parpadee, modales flotantes, notificaciones Toast (alertas de colores interactivos), y hasta le integré una cámara lectora de Códigos de Barras que usa la API nativa de Chrome para hacer las ventas más veloces. 
+
+================================================
+  🐳 CORRER CON DOCKER (LOCAL)
+================================================
+
+Requisitos previos:
+  - Tener Docker Desktop instalado y corriendo
+
+Pasos para levantar el proyecto:
+
+  1. Abrir una terminal en esta carpeta (donde está docker-compose.yml)
+
+  2. Primera vez (construye la imagen y levanta todo):
+       docker compose up --build
+
+  3. Las veces siguientes (ya está construido, solo levanta):
+       docker compose up -d
+
+  4. Abrir en el navegador:
+       http://localhost:3001
+
+  5. Para apagar los contenedores:
+       docker compose down
+
+NOTAS:
+  - La base de datos se crea automáticamente al primer arranque (docker-init.sql)
+  - Los datos persisten aunque apagues Docker (volumen db_data)
+  - Si quieres borrar TODO incluyendo la BD: docker compose down -v
+  - MySQL de Docker está en el puerto 3307 (el 3306 lo usa MySQL local)
+  - La app corre internamente en el puerto 3000, expuesta en el 3001

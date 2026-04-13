@@ -1,0 +1,86 @@
+version: '3.8'
+
+# ============================================================
+# docker-compose.yml — Tienda Manager V2
+# Levanta dos servicios:
+#   • db  : MySQL 8.0 con la BD inicializada automáticamente
+#   • app : Node.js backend + frontend estático
+# Uso:
+#   docker compose up --build        (primera vez)
+#   docker compose up -d             (en segundo plano)
+#   docker compose down -v           (apagar y borrar datos)
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # SERVICIO: Base de Datos MySQL
+  # ----------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: tienda-manager-db
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tienda_manager
+      MYSQL_USER: tienda_user
+      MYSQL_PASSWORD: tienda_pass
+
+    ports:
+      - "3307:3306"   # Host:3307 → Container:3306 (evita conflicto con MySQL local)
+
+    volumes:
+      # Persistencia de datos (no se borran al reiniciar)
+      - db_data:/var/lib/mysql
+      # Script de inicialización automática
+      - ./docker/docker-init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ----------------------------------------------------------
+  # SERVICIO: Aplicación Node.js
+  # ----------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tienda-manager-app
+    restart: unless-stopped
+
+    ports:
+      - "3001:3000"   # Abre http://localhost:3001 (evita conflicto con Node.js local en :3000)
+
+    environment:
+      NODE_ENV: production
+
+      # Conexión a MySQL (usa el nombre del servicio "db" como host)
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: tienda_user
+      DB_PASSWORD: tienda_pass
+      DB_NAME: tienda_manager
+
+      # Servidor
+      PORT: 3000
+
+      # JWT — cambia esto por un secreto real en producción
+      JWT_SECRET: super_secreto_seguro_de_produccion_cambia_esto
+      JWT_EXPIRES_IN: 7d
+
+    depends_on:
+      db:
+        condition: service_healthy   # espera healthcheck verde antes de arrancar
+
+    volumes:
+      # Los uploads/imágenes persisten aunque el contenedor se reinicie
+      - app_uploads:/app/public/uploads
+
+volumes:
+  db_data:        # datos de MySQL
+  app_uploads:    # archivos subidos por los usuarios
