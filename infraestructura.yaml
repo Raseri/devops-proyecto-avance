@@ -1,119 +1,18 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: >
-  Plantilla de Infraestructura como Codigo (IaC) para el proyecto DevOps.
-  Crea un Bucket S3 y una instancia EC2 t3.micro usando el rol LabRole
-  existente de AWS Learner Lab.
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Plantilla Fase 4 - IaC para Cuenta Personal
 
-# ─────────────────────────────────────────────
-# PARÁMETROS
-# ─────────────────────────────────────────────
-Parameters:
-
-  NombreBucket:
-    Type: String
-    Default: mi-bucket-devops-iac
-    Description: Nombre unico global para el bucket de S3.
-
-  AmiId:
-    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
-    Description: AMI de Amazon Linux 2 (se resuelve automaticamente por region).
-
-  KeyPairName:
-    Type: String
-    Default: llave-devops
-    Description: Nombre del Key Pair existente en AWS para acceso SSH.
-
-# ─────────────────────────────────────────────
-# RECURSOS
-# ─────────────────────────────────────────────
 Resources:
-
-  # ── S3 Bucket ──────────────────────────────
   BucketDevOps:
-    Type: AWS::S3::Bucket
+    Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Ref NombreBucket
-      VersioningConfiguration:
-        Status: Enabled
-      Tags:
-        - Key: Proyecto
-          Value: devops-proyecto-avance
-        - Key: Entorno
-          Value: desarrollo
+      BucketName: !Sub "mi-bucket-devops-ia-${AWS::AccountId}"
 
-  # ── Perfil de instancia con LabRole ────────
-  # LabRole ya existe en Learner Lab; solo lo referenciamos.
-  PerfilInstanciaLabRole:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      InstanceProfileName: PerfilLabRole
-      Roles:
-        - LabRole                          # Rol preexistente en Learner Lab
-
-  # ── Grupo de seguridad básico ───────────────
-  GrupoSeguridadSSH:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Permite acceso SSH desde cualquier IP
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Nombre
-          Value: sg-devops-ssh
-
-  # ── Instancia EC2 ──────────────────────────
   InstanciaEC2DevOps:
-    Type: AWS::EC2::Instance
+    Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: t3.micro
-      ImageId: !Ref AmiId
-      KeyName: !Ref KeyPairName
-      IamInstanceProfile: !Ref PerfilInstanciaLabRole
-      SecurityGroups:
-        - !Ref GrupoSeguridadSSH
-      UserData:
-        Fn::Base64: |
-          #!/bin/bash
-          yum update -y
-          yum install -y git docker python3
-          systemctl start docker
-          systemctl enable docker
-          usermod -aG docker ec2-user
+      ImageId: ami-0e1bed4f06a3b463d
+      KeyName: llave-devops
       Tags:
         - Key: Name
           Value: servidor-devops-iac
-        - Key: Proyecto
-          Value: devops-proyecto-avance
-        - Key: Entorno
-          Value: desarrollo
-
-# ─────────────────────────────────────────────
-# SALIDAS
-# ─────────────────────────────────────────────
-Outputs:
-
-  BucketS3Nombre:
-    Description: Nombre del bucket S3 creado
-    Value: !Ref BucketDevOps
-    Export:
-      Name: BucketDevOpsNombre
-
-  EC2InstanceId:
-    Description: ID de la instancia EC2 creada
-    Value: !Ref InstanciaEC2DevOps
-    Export:
-      Name: EC2DevOpsInstanceId
-
-  EC2PublicIP:
-    Description: IP publica de la instancia EC2
-    Value: !GetAtt InstanciaEC2DevOps.PublicIp
-    Export:
-      Name: EC2DevOpsPublicIP
