@@ -1,0 +1,38 @@
+name: CI/CD Pipeline — DevOps Proyecto
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-docker:
+    name: Build Docker Image (Integration Test)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código del repositorio
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Configurar Docker Buildx (soporte multi-platform y cache)
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Construir la imagen Docker (multi-stage build)
+      #    Si el build falla, el pipeline falla → prueba de integración
+      - name: Build imagen Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false          # Solo construye, no sube al registry
+          tags: devops-proyecto:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 4. Verificar que la imagen fue creada correctamente
+      - name: Verificar imagen construida
+        run: |
+          docker images
+          echo "✅ Build exitoso — commit: ${{ github.sha }}"
