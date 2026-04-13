@@ -27,3 +27,7 @@ desktop.ini
 *.tmp
 *.temp
 ~*
+
+# Ignorar llaves SSH y credenciales AWS — NUNCA subir al repo
+*.pem
+aws_manage.py
